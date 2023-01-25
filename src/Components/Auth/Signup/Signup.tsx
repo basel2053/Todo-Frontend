@@ -1,11 +1,18 @@
+import axios from 'axios';
 import Card from '../../UI/Card';
 import Button from '../../UI/Button';
 import Input from '../../UI/Input';
 import { Link } from 'react-router-dom';
 
 const Signup = () => {
-	const registerHandler = (e: React.FormEvent) => {
+	const registerHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
+		// await axios.post('/http://localhost:3000/signup',{
+		// 	email:,
+		// 	password:,
+		// 	confirmPassword:,
+		// 	name:,
+		// });
 	};
 	return (
 		<Card className='fixed z-30 w-[36%] m-auto inset-x-0 top-[15%] border'>
