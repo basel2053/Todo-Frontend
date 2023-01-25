@@ -1,4 +1,4 @@
-import todoImg from './to-do-list-apps.png';
+import Card from '../../UI/Card';
 import { Link } from 'react-router-dom';
 const Home = () => {
 	return (
@@ -7,9 +7,9 @@ const Home = () => {
 				<h1 className='text-6xl font-bold mb-4'>Welcome, Friend</h1>
 				<h2 className='text-5xl text-amber-400 font-bold'>to my todo list</h2>
 			</div>
-			<div className='border-4 rounded-lg bg-amber-400'>
+			<Card className=' bg-amber-400'>
 				<div className=' w-[360px] border-b border-b-indigo-400 '>
-					<img src={todoImg} className='w-full' alt='todo image' />
+					<img src='/to-do-list-apps.png' className='w-full' alt='todo image' />
 				</div>
 				<div className='text-center'>
 					<Link
@@ -19,7 +19,7 @@ const Home = () => {
 						GET STARTED
 					</Link>
 				</div>
-			</div>
+			</Card>
 		</div>
 	);
 };

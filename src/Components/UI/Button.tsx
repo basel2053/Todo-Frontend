@@ -1,4 +1,4 @@
-const Button = (props: { children: React.ReactNode; className: string }) => {
+const Button = (props: { children: React.ReactNode; className: string; type?: 'submit' | 'button' }) => {
 	return <button className={`border-2 rounded-xl font-bold  ${props.className}`}>{props.children}</button>;
 };
 
