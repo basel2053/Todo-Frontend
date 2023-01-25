@@ -1,8 +1,11 @@
+import Header from './Components/Layout/Header/Header';
+import Home from './Components/Main/Home/Home';
 function App() {
 	return (
-		<div className='App'>
-			<h1 className='text-rose-400 text-center text-6xl '>Hello World</h1>
-		</div>
+		<>
+			<Header />
+			<Home />
+		</>
 	);
 }
 
