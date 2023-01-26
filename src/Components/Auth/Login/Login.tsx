@@ -1,11 +1,17 @@
 import Card from '../../UI/Card';
 import Button from '../../UI/Button';
 import Input from '../../UI/Input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useInput from '../../../hooks/use-input';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useContext, useState } from 'react';
+import AuthContext from '../../../context/auth-context';
 
 const Login = () => {
+	const { onLogin } = useContext(AuthContext);
+	const [submitMsg, setSubmitMsg] = useState('');
+	const navigate = useNavigate();
+
 	const emailInput = useInput((val: string) => val.includes('@') && val.length > 4);
 	const passwordInput = useInput((val: string) => val.length >= 6 && val.length <= 16);
 	let formIsValid = false;
@@ -14,13 +20,22 @@ const Login = () => {
 	}
 	const loginHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const res = await axios.post('http://localhost:3000/login', {
-			email: emailInput.value,
-			password: passwordInput.value,
-		});
+		const res = await axios
+			.post('http://localhost:3000/login', {
+				email: emailInput.value,
+				password: passwordInput.value,
+			})
+			.catch((err: AxiosError) => {
+				if (err.response) setSubmitMsg(err.response.data as string);
+			});
+		if (res?.statusText === 'OK') {
+			onLogin(res.data);
+			navigate('/');
+		}
 	};
 	return (
 		<Card className='fixed z-30 w-[36%] m-auto inset-x-0 top-1/4 border'>
+			{submitMsg && <p className='text-center'>{submitMsg}</p>}
 			<form onSubmit={loginHandler} className='mt-8 text-center'>
 				<label htmlFor='email' className='block text-amber-300 text-2xl mb-2'>
 					Email:

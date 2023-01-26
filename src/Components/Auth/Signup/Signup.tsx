@@ -1,15 +1,18 @@
 import axios, { AxiosError } from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Card from '../../UI/Card';
 import Button from '../../UI/Button';
 import Input from '../../UI/Input';
 import useInput from '../../../hooks/use-input';
+import { useState } from 'react';
 
 const Signup = () => {
+	const [submitMsg, setSubmitMsg] = useState('');
 	const emailInput = useInput((val: string) => val.includes('@') && val.length > 4);
 	const passwordInput = useInput((val: string) => val.length >= 6 && val.length <= 16);
 	const confirmInput = useInput((val: string) => val === passwordInput.value);
 	const nameInput = useInput((val: string) => val.trim() !== '');
+	const navigate = useNavigate();
 
 	let formIsValid = false;
 	if (emailInput.isValid && passwordInput.isValid && confirmInput.isValid) {
@@ -25,13 +28,19 @@ const Signup = () => {
 				name: nameInput.value,
 			})
 			.catch((err: AxiosError) => {
-				if (err.response) console.log(err.response.data);
+				if (err.response) setSubmitMsg(err.response.data + ', or the email is not valid');
 			});
+		if (res?.statusText === 'OK') {
+			setSubmitMsg('created sucessfully, you will be redirected');
 
-		// console.log(res);
+			setTimeout(() => {
+				navigate('/login');
+			}, 3000);
+		}
 	};
 	return (
 		<Card className='fixed z-30 w-[36%] m-auto inset-x-0 top-[15%] border'>
+			{submitMsg && <p className='text-center'>{submitMsg}</p>}
 			<form onSubmit={registerHandler} className='mt-8 text-center '>
 				<label htmlFor='email' className='block text-amber-300 text-2xl mb-2'>
 					Email:

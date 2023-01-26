@@ -1,5 +1,6 @@
 import Header from './Layout/Header/Header';
 import { Outlet } from 'react-router-dom';
+
 const Root = () => {
 	return (
 		<>
