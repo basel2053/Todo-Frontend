@@ -2,3 +2,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.specific-date::-webkit-datetime-edit {
+	padding: 1em;
+}
+
+.specific-date::-webkit-datetime-edit-text {
+	color: #fbbf24;
+	padding: 0 0.3em;
+}
+.specific-date::-webkit-datetime-edit-month-field {
+	color: #fbbf24;
+}
+.specific-date::-webkit-datetime-edit-day-field {
+	color: #fbbf24;
+}
+.specific-date::-webkit-datetime-edit-year-field {
+	color: #fbbf24;
+}
+.specific-date::-webkit-inner-spin-button {
+	display: none;
+}
+.specific-date::-webkit-calendar-picker-indicator {
+	background-color: #d4d4d4;
+	border-radius: 4px;
+	cursor: pointer;
+}
