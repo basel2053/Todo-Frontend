@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
 import Card from '../../UI/Card';
 import Button from '../../UI/Button';
@@ -17,12 +17,18 @@ const Signup = () => {
 	}
 	const registerHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const res = await axios.post('/http://localhost:3000/signup', {
-			email: emailInput.value,
-			password: passwordInput.value,
-			confirmPassword: confirmInput.value,
-			name: nameInput.value,
-		});
+		const res = await axios
+			.post('http://localhost:3000/signup', {
+				email: emailInput.value,
+				password: passwordInput.value,
+				confirmPassword: confirmInput.value,
+				name: nameInput.value,
+			})
+			.catch((err: AxiosError) => {
+				if (err.response) console.log(err.response.data);
+			});
+
+		// console.log(res);
 	};
 	return (
 		<Card className='fixed z-30 w-[36%] m-auto inset-x-0 top-[15%] border'>

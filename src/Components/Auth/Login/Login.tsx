@@ -14,7 +14,7 @@ const Login = () => {
 	}
 	const loginHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const res = await axios.post('/http://localhost:3000/login', {
+		const res = await axios.post('http://localhost:3000/login', {
 			email: emailInput.value,
 			password: passwordInput.value,
 		});
