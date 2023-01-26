@@ -2,10 +2,22 @@ import Card from '../../UI/Card';
 import Button from '../../UI/Button';
 import Input from '../../UI/Input';
 import { Link } from 'react-router-dom';
+import useInput from '../../../hooks/use-input';
+import axios from 'axios';
 
 const Login = () => {
-	const loginHandler = (e: React.FormEvent) => {
+	const emailInput = useInput((val: string) => val.includes('@') && val.length > 4);
+	const passwordInput = useInput((val: string) => val.length >= 6 && val.length <= 16);
+	let formIsValid = false;
+	if (emailInput.isValid && passwordInput.isValid) {
+		formIsValid = true;
+	}
+	const loginHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
+		const res = await axios.post('/http://localhost:3000/login', {
+			email: emailInput.value,
+			password: passwordInput.value,
+		});
 	};
 	return (
 		<Card className='fixed z-30 w-[36%] m-auto inset-x-0 top-1/4 border'>
@@ -13,16 +25,39 @@ const Login = () => {
 				<label htmlFor='email' className='block text-amber-300 text-2xl mb-2'>
 					Email:
 				</label>
-				<Input type='email' name='email' id='email' />
+				<Input
+					type='email'
+					name='email'
+					id='email'
+					value={emailInput.value}
+					onChange={emailInput.inputChangeHandler}
+					onBlur={emailInput.inputBlurHandler}
+					className={emailInput.hasError ? 'border-rose-500' : ''}
+				/>
+				{emailInput.hasError && <p className='text-xs font-medium mt-1 text-rose-500'>Email must be valid.</p>}
 				<label htmlFor='password' className='block text-amber-300 text-2xl my-2'>
 					Password:
 				</label>
-				<Input type='password' name='password' id='password' />
+				<Input
+					type='password'
+					name='password'
+					id='password'
+					value={passwordInput.value}
+					onChange={passwordInput.inputChangeHandler}
+					onBlur={passwordInput.inputBlurHandler}
+					className={passwordInput.hasError ? 'border-rose-500' : ''}
+				/>
+				{passwordInput.hasError && (
+					<p className='text-xs font-medium mt-1 text-rose-500'>Password must be between 6 and 16 characters</p>
+				)}
 				<Link to='/signup' className='block hover:text-purple-300 mt-3'>
 					don't have an account yet?
 				</Link>
 				<div>
-					<Button className='py-1 px-4 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-gray-50 transition-all  border-2 rounded-xl font-bold inline-block text-3xl mb-10 mt-6'>
+					<Button
+						className='py-1 px-4 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-gray-50 transition-all cursor-pointer border-2 rounded-xl font-bold inline-block text-3xl mb-10 mt-6 disabled:text-teal-400 disabled:border-teal-400 disabled:hover:bg-transparent'
+						disabled={!formIsValid}
+					>
 						Login
 					</Button>
 				</div>

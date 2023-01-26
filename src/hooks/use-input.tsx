@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import React, { useReducer } from 'react';
 
 interface inputState {
 	value: string;
@@ -29,12 +29,12 @@ const useInput = (validate: Function) => {
 	const [input, dispatch] = useReducer(inputReducer, defaultValues);
 	const isValid = validate(input.value);
 	const hasError = !isValid && input.isTouched;
-	const inputChangeHandler = e => {
-		dispatch({ type: 'INPUT', value: e.target.value });
+	const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		dispatch({ type: 'INPUT', value: e.target.value, isTouched: false });
 	};
 
 	const inputBlurHandler = () => {
-		dispatch({ type: 'BLUR', isTouched: true });
+		dispatch({ type: 'BLUR', isTouched: true, value: '' });
 	};
 
 	const reset = () => {
