@@ -1,6 +1,6 @@
 import Card from '../../UI/Card';
 import { Link } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../../../context/auth-context';
 import axios, { AxiosError } from 'axios';
 import TodosList from './TodosList';
@@ -9,8 +9,8 @@ import Modal from '../Modal/Modal';
 const Home = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [todos, setTodos] = useState<ITodo[]>([]);
+	const [updatingTodo, setUpdatingTodo] = useState<ITodo | undefined>();
 	const { isLogged } = useContext(AuthContext);
-
 	useEffect(() => {
 		if (isLogged) {
 			const getTodos = async () => {
@@ -32,9 +32,14 @@ const Home = () => {
 
 	const showCreateHandler = () => {
 		setShowModal(true);
+		setUpdatingTodo(undefined);
 	};
 	const closeModalHandler = () => {
 		setShowModal(false);
+	};
+	const updateTodoHandler = (todo: ITodo) => {
+		setShowModal(true);
+		setUpdatingTodo(todo);
 	};
 	const createTodoHandler = async (todo: ITodo) => {
 		setTodos(prevState => [...prevState, { _id: String(Date.now()), ...todo }]);
@@ -42,6 +47,41 @@ const Home = () => {
 			.post('http://localhost:3000/todos', todo, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
 			})
+			.catch((err: AxiosError) => {
+				console.log(err + ' error handling here');
+			});
+		setShowModal(false);
+	};
+	const removeTodoHandler = async (todoId: string) => {
+		if (confirm('confirm deleting this item.')) {
+			setTodos(prevState => prevState.filter(todo => todo._id !== todoId));
+			await axios
+				.delete('http://localhost:3000/todos', {
+					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
+					data: {
+						todoId,
+					},
+				})
+				.catch((err: AxiosError) => {
+					console.log(err + ' error handling here');
+				});
+		}
+	};
+	const editTodoHandler = async (todo: ITodo) => {
+		setTodos(prevState =>
+			prevState.map(t => (t._id !== todo._id ? t : { ...t, title: todo.title, endDate: todo.endDate }))
+		);
+		await axios
+			.patch(
+				'http://localhost:3000/todos',
+				{
+					title: todo.title,
+					todoId: todo._id,
+				},
+				{
+					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
+				}
+			)
 			.catch((err: AxiosError) => {
 				console.log(err + ' error handling here');
 			});
@@ -69,10 +109,22 @@ const Home = () => {
 						</div>
 					</Card>
 				) : (
-					<TodosList todos={todos} onShowCreate={showCreateHandler} />
+					<TodosList
+						todos={todos}
+						onShowCreate={showCreateHandler}
+						onRemoveTodo={removeTodoHandler}
+						onUpdateTodo={updateTodoHandler}
+					/>
 				)}
 			</div>
-			{showModal && <Modal onCloseModal={closeModalHandler} onCreateTodo={createTodoHandler} />}
+			{showModal && (
+				<Modal
+					onCloseModal={closeModalHandler}
+					onCreateTodo={createTodoHandler}
+					onUpdateTodo={editTodoHandler}
+					todo={updatingTodo}
+				/>
+			)}
 		</>
 	);
 };

@@ -48,6 +48,7 @@ const Login = () => {
 					onChange={emailInput.inputChangeHandler}
 					onBlur={emailInput.inputBlurHandler}
 					className={emailInput.hasError ? 'border-rose-500' : ''}
+					placeholder='Here goes your email.'
 				/>
 				{emailInput.hasError && <p className='text-xs font-medium mt-1 text-rose-500'>Email must be valid.</p>}
 				<label htmlFor='password' className='block text-amber-300 text-2xl my-2'>
@@ -61,6 +62,7 @@ const Login = () => {
 					onChange={passwordInput.inputChangeHandler}
 					onBlur={passwordInput.inputBlurHandler}
 					className={passwordInput.hasError ? 'border-rose-500' : ''}
+					placeholder='Secret password.'
 				/>
 				{passwordInput.hasError && (
 					<p className='text-xs font-medium mt-1 text-rose-500'>Password must be between 6 and 16 characters</p>

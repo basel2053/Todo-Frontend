@@ -7,19 +7,16 @@
 	padding: 1em;
 }
 
+.specific-date::-webkit-datetime-edit-month-field,
+.specific-date::-webkit-datetime-edit-day-field,
+.specific-date::-webkit-datetime-edit-year-field,
 .specific-date::-webkit-datetime-edit-text {
 	color: #fbbf24;
+}
+.specific-date::-webkit-datetime-edit-text {
 	padding: 0 0.3em;
 }
-.specific-date::-webkit-datetime-edit-month-field {
-	color: #fbbf24;
-}
-.specific-date::-webkit-datetime-edit-day-field {
-	color: #fbbf24;
-}
-.specific-date::-webkit-datetime-edit-year-field {
-	color: #fbbf24;
-}
+
 .specific-date::-webkit-inner-spin-button {
 	display: none;
 }

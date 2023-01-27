@@ -53,6 +53,7 @@ const Signup = () => {
 					onChange={emailInput.inputChangeHandler}
 					onBlur={emailInput.inputBlurHandler}
 					className={emailInput.hasError ? 'border-rose-500' : ''}
+					placeholder='ex:.john@test.com.'
 				/>
 				{emailInput.hasError && <p className='text-xs font-medium mt-1 text-rose-500'>Email must be valid.</p>}
 				<label htmlFor='password' className='block text-amber-300 text-2xl my-2'>
@@ -66,6 +67,7 @@ const Signup = () => {
 					onChange={passwordInput.inputChangeHandler}
 					onBlur={passwordInput.inputBlurHandler}
 					className={passwordInput.hasError ? 'border-rose-500' : ''}
+					placeholder='Password 6-16 char.'
 				/>
 				{passwordInput.hasError && (
 					<p className='text-xs font-medium mt-1 text-rose-500'>Password must be between 6 and 16 characters</p>
@@ -81,6 +83,7 @@ const Signup = () => {
 					onChange={confirmInput.inputChangeHandler}
 					onBlur={confirmInput.inputBlurHandler}
 					className={confirmInput.hasError ? 'border-rose-500' : ''}
+					placeholder='Match above password.'
 				/>
 				{confirmInput.hasError && <p className='text-xs font-medium mt-1 text-rose-500'>Password doesn't match.</p>}
 				<label htmlFor='name' className='block text-amber-300 text-2xl my-2'>
@@ -93,6 +96,7 @@ const Signup = () => {
 					value={nameInput.value}
 					onChange={nameInput.inputChangeHandler}
 					onBlur={nameInput.inputBlurHandler}
+					placeholder='Your name (optional).'
 				/>
 				<Link to='/login' className='block hover:text-purple-300 mt-3'>
 					already have an account?

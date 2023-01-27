@@ -3,11 +3,13 @@ import { ChangeEventHandler, FocusEventHandler } from 'react';
 const Input = (props: {
 	type: string;
 	className?: string;
-	name: string;
+	name?: string;
 	id?: string;
 	value?: string;
 	onChange?: ChangeEventHandler;
 	onBlur?: FocusEventHandler;
+	defaultValue?: string;
+	placeholder?: string;
 }) => {
 	return (
 		<input
@@ -18,6 +20,8 @@ const Input = (props: {
 			value={props.value}
 			onChange={props.onChange}
 			onBlur={props.onBlur}
+			defaultValue={props.defaultValue}
+			placeholder={props.placeholder}
 		/>
 	);
 };
