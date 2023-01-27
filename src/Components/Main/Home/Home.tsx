@@ -1,6 +1,7 @@
 import Card from '../../UI/Card';
 import { Link } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../../../context/auth-context';
 import axios, { AxiosError } from 'axios';
 import TodosList from './TodosList';
@@ -8,14 +9,18 @@ import { ITodo } from './Todo';
 import Modal from '../Modal/Modal';
 const Home = () => {
 	const [showModal, setShowModal] = useState(false);
+	const [todosCount, setTodosCount] = useState(0);
+	const [page, setPage] = useState(1);
 	const [todos, setTodos] = useState<ITodo[]>([]);
 	const [updatingTodo, setUpdatingTodo] = useState<ITodo | undefined>();
 	const { isLogged } = useContext(AuthContext);
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		if (isLogged) {
 			const getTodos = async () => {
 				const res = await axios
-					.get('http://localhost:3000/todos', {
+					.get('http://localhost:3000/todos?page=' + page, {
 						headers: { Authorization: localStorage.getItem('isLogged') },
 					})
 					.catch((err: AxiosError) => {
@@ -23,12 +28,14 @@ const Home = () => {
 					});
 
 				if (res?.statusText === 'OK') {
-					setTodos(res.data);
+					setTodos(res.data.todos);
+					setTodosCount(res.data.todosCount);
+					setPage(res.data.page);
 				}
 			};
 			getTodos();
 		}
-	}, [isLogged]);
+	}, [isLogged, page]);
 
 	const showCreateHandler = () => {
 		setShowModal(true);
@@ -42,7 +49,9 @@ const Home = () => {
 		setUpdatingTodo(todo);
 	};
 	const createTodoHandler = async (todo: ITodo) => {
-		setTodos(prevState => [...prevState, { _id: String(Date.now()), ...todo }]);
+		if (todos.length < 6) {
+			setTodos(prevState => [...prevState, { _id: String(Date.now()), ...todo }]);
+		}
 		await axios
 			.post('http://localhost:3000/todos', todo, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
@@ -50,6 +59,7 @@ const Home = () => {
 			.catch((err: AxiosError) => {
 				console.log(err + ' error handling here');
 			});
+		setTodosCount(todosCount + 1);
 		setShowModal(false);
 	};
 	const removeTodoHandler = async (todoId: string) => {
@@ -66,6 +76,7 @@ const Home = () => {
 					console.log(err + ' error handling here');
 				});
 		}
+		setTodosCount(todosCount - 1);
 	};
 	const editTodoHandler = async (todo: ITodo) => {
 		setTodos(prevState =>
@@ -86,6 +97,18 @@ const Home = () => {
 				console.log(err + ' error handling here');
 			});
 		setShowModal(false);
+	};
+	const nextHandler = () => {
+		setPage(page + 1);
+		navigate({
+			search: '?page=' + (page + 1),
+		});
+	};
+	const previousHandler = () => {
+		setPage(page - 1);
+		navigate({
+			search: '?page=' + (page - 1),
+		});
 	};
 	return (
 		<>
@@ -114,6 +137,10 @@ const Home = () => {
 						onShowCreate={showCreateHandler}
 						onRemoveTodo={removeTodoHandler}
 						onUpdateTodo={updateTodoHandler}
+						nextHandler={nextHandler}
+						previousHandler={previousHandler}
+						todosCount={todosCount}
+						page={page}
 					/>
 				)}
 			</div>

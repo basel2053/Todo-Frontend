@@ -1,35 +1,93 @@
 import Todo, { ITodo } from './Todo';
 import Button from '../../UI/Button';
-import Input from '../../UI/Input';
+import React, { useEffect, useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import TodoHeader from './TodoHeader';
 
 const TodosList = (props: {
 	todos: ITodo[];
 	onShowCreate: React.MouseEventHandler;
 	onRemoveTodo: Function;
 	onUpdateTodo: Function;
+	nextHandler: React.MouseEventHandler;
+	previousHandler: React.MouseEventHandler;
+	todosCount: number;
+	page: number;
 }) => {
+	const [query, setQuery] = useState('');
+	const [todos, setTodos] = useState<ITodo[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (query) {
+			setIsLoading(true);
+		}
+		const searchedTodos = async () => {
+			const res = await axios
+				.post(
+					'http://localhost:3000/todos/search',
+					{ query },
+					{
+						headers: { Authorization: localStorage.getItem('isLogged') },
+					}
+				)
+				.catch((err: AxiosError) => {
+					console.log(err + 'error handling here');
+				});
+			if (res?.statusText === 'OK') {
+				setTodos(res.data);
+			}
+		};
+		const x = setTimeout(() => {
+			query ? searchedTodos() : setTodos([]);
+			setIsLoading(false);
+		}, 800);
+		return () => {
+			clearTimeout(x);
+		};
+	}, [query]);
+
 	const onRemoveTodo = (todoId: string) => {
 		props.onRemoveTodo(todoId);
+		if (query) {
+			setTodos(prevState => prevState.filter(todo => todo._id !== todoId));
+		}
 	};
 	const onUpdateTodo = (todo: ITodo) => {
 		props.onUpdateTodo(todo);
 	};
+
+	const todoSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setQuery(e.target.value);
+	};
+	const hasNext = props.todosCount - (props.page - 1) * 6 > 6 ? true : false;
+
 	return (
-		<div className='relative w-1/2 rounded border-t-2 border-t-amber-400 p-3 shadow-lg top-[5%] bg-neutral-800'>
-			<div className='flex bg-amber-300 mb-4 py-2 rounded'>
-				<button className='mx-5 text-gray-900 hover:text-teal-500 font-bold text-lg transition-all'>Active</button>
-				<button className='mx-5 text-gray-900 hover:text-rose-500 font-bold text-lg transition-all'>Completed</button>
-				<Input type='search' className='ml-3 py-0 bg-gray-100 text-gray-600 w-1/3' placeholder='Search Todos...' />
-			</div>
-			<ul className=''>
-				{props.todos.map(todo => (
-					<Todo
-						key={todo._id}
-						todo={{ _id: todo._id, title: todo.title, status: todo.status, endDate: todo.endDate }}
-						onRemoveTodo={onRemoveTodo}
-						onUpdateTodo={onUpdateTodo}
-					/>
-				))}
+		<div className='relative w-1/2 rounded border-t-2 border-t-amber-400 p-3 shadow-lg top-[5%] bg-neutral-800 min-h-[80%]'>
+			<TodoHeader query={query} todoSearchHandler={todoSearchHandler} />
+			<ul>
+				{!query && props.todos.length > 0 ? (
+					props.todos.map(todo => (
+						<Todo
+							key={todo._id}
+							todo={{ _id: todo._id, title: todo.title, status: todo.status, endDate: todo.endDate }}
+							onRemoveTodo={onRemoveTodo}
+							onUpdateTodo={onUpdateTodo}
+						/>
+					))
+				) : query ? (
+					todos.map(todo => (
+						<Todo
+							key={todo._id}
+							todo={{ _id: todo._id, title: todo.title, status: todo.status, endDate: todo.endDate }}
+							onRemoveTodo={onRemoveTodo}
+							onUpdateTodo={onUpdateTodo}
+						/>
+					))
+				) : (
+					<h2>No Todos yet! What you are waiting for, start creating your list, and have fun!!</h2>
+				)}
+				{isLoading && <h2>Fetching data in progress...</h2>}
 			</ul>
 			<Button
 				className='material-symbols-outlined absolute bottom-2 right-[10%] bg-amber-400 flex items-center justify-center p-1 rounded-full border-none hover:bg-yellow-400 transition-all h-10 w-10 text-4xl'
@@ -37,6 +95,20 @@ const TodosList = (props: {
 			>
 				add
 			</Button>
+			<button
+				className='material-symbols-outlined absolute left-[35%] bottom-[-6px] text-3xl hover:text-amber-400 transition-all disabled:text-gray-500'
+				disabled={props.page <= 1 && true}
+				onClick={props.previousHandler}
+			>
+				chevron_left
+			</button>
+			<button
+				className='material-symbols-outlined absolute right-[35%] bottom-[-6px] text-3xl hover:text-amber-400 transition-all disabled:text-gray-500'
+				disabled={!hasNext}
+				onClick={props.nextHandler}
+			>
+				chevron_right
+			</button>
 		</div>
 	);
 };
