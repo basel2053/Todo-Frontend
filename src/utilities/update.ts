@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-const updateStatus = async (title: string, status: 'finished' | 'unfinished', date: Date, id?: string) => {
+const updateStatus = async (status: 'finished' | 'unfinished', id?: string) => {
 	await axios.patch(
 		'http://localhost:3000/todos',
 		{
-			title: title,
 			status: status,
-			endDate: date,
 			todoId: id,
 		},
 		{

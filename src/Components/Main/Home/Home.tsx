@@ -37,13 +37,13 @@ const Home = () => {
 		setShowModal(false);
 	};
 	const createTodoHandler = async (todo: ITodo) => {
-		setTodos(prevState => [...prevState, todo]);
+		setTodos(prevState => [...prevState, { _id: String(Date.now()), ...todo }]);
 		await axios
 			.post('http://localhost:3000/todos', todo, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
 			})
 			.catch((err: AxiosError) => {
-				console.log(err + 'error handling here');
+				console.log(err + ' error handling here');
 			});
 		setShowModal(false);
 	};

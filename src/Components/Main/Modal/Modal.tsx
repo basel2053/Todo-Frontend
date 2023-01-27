@@ -12,7 +12,7 @@ const Backdrop = (props: { onCloseModal: React.MouseEventHandler }) => {
 
 const ModalOverlay = (props: { onCloseModal: React.MouseEventHandler; onCreateTodo: Function }) => {
 	const titleInput = useInput((val: string) => val.trim().length >= 2 && val.trim().length <= 30);
-	const dateInput = useInput((val: Date) => String(val).length !== 0);
+	const dateInput = useInput((val: string) => new Date(val).getTime() > Date.now() + 50000 || val === '');
 	let formIsValid = false;
 	if (titleInput.isValid && dateInput.isValid) {
 		formIsValid = true;
@@ -49,6 +49,9 @@ const ModalOverlay = (props: { onCloseModal: React.MouseEventHandler; onCreateTo
 					onBlur={dateInput.inputBlurHandler}
 					className={dateInput.hasError ? 'specific-date py-0 w-3/4 border-rose-500' : 'specific-date py-0 w-3/4'}
 				/>
+				{dateInput.hasError && (
+					<p className='text-xs font-medium mt-1 text-rose-500'>End-Date must be after current date.</p>
+				)}
 				<div className='flex justify-evenly w-3/4 mt-5'>
 					<Button
 						className='py-1 px-4 border-gray-300 text-gray-300 hover:bg-neutral-500 hover:text-gray-50 transition-all cursor-pointer border-2 rounded-xl font-bold inline-block text-3xl mb-10 mt-6'
