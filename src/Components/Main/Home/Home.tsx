@@ -16,23 +16,23 @@ const Home = () => {
 	const { isLogged } = useContext(AuthContext);
 	const navigate = useNavigate();
 
+	const getTodos = async () => {
+		const res = await axios
+			.get('http://localhost:3000/todos?page=' + page, {
+				headers: { Authorization: localStorage.getItem('isLogged') },
+			})
+			.catch((err: AxiosError) => {
+				console.log(err + 'error handling here');
+			});
+
+		if (res?.statusText === 'OK') {
+			setTodos(res.data.todos);
+			setTodosCount(res.data.todosCount);
+			setPage(res.data.page);
+		}
+	};
 	useEffect(() => {
 		if (isLogged) {
-			const getTodos = async () => {
-				const res = await axios
-					.get('http://localhost:3000/todos?page=' + page, {
-						headers: { Authorization: localStorage.getItem('isLogged') },
-					})
-					.catch((err: AxiosError) => {
-						console.log(err + 'error handling here');
-					});
-
-				if (res?.statusText === 'OK') {
-					setTodos(res.data.todos);
-					setTodosCount(res.data.todosCount);
-					setPage(res.data.page);
-				}
-			};
 			getTodos();
 		}
 	}, [isLogged, page]);
@@ -64,7 +64,6 @@ const Home = () => {
 	};
 	const removeTodoHandler = async (todoId: string) => {
 		if (confirm('confirm deleting this item.')) {
-			setTodos(prevState => prevState.filter(todo => todo._id !== todoId));
 			await axios
 				.delete('http://localhost:3000/todos', {
 					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
@@ -76,7 +75,7 @@ const Home = () => {
 					console.log(err + ' error handling here');
 				});
 		}
-		setTodosCount(todosCount - 1);
+		getTodos();
 	};
 	const editTodoHandler = async (todo: ITodo) => {
 		setTodos(prevState =>
