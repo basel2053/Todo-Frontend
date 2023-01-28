@@ -10,11 +10,13 @@ import Modal from '../Modal/Modal';
 const Home = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [todosCount, setTodosCount] = useState(0);
-	const [page, setPage] = useState(1);
 	const [todos, setTodos] = useState<ITodo[]>([]);
 	const [updatingTodo, setUpdatingTodo] = useState<ITodo | undefined>();
 	const { isLogged } = useContext(AuthContext);
 	const navigate = useNavigate();
+	let params = new URLSearchParams(window.location.search);
+	let queryPage = params.get('page');
+	const [page, setPage] = useState(Number(queryPage) || 1);
 
 	const getTodos = async () => {
 		const res = await axios

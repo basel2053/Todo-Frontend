@@ -1,8 +1,24 @@
 import Todo, { ITodo } from './Todo';
 import Button from '../../UI/Button';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import TodoHeader from './TodoHeader';
+
+interface optionAction {
+	type: 'UPDATE' | 'PREV' | 'NEXT';
+	page: number;
+	count: number;
+}
+
+const optionsReducer = (state: { page: number; count: number }, action: optionAction) => {
+	if (action.type === 'UPDATE') {
+		return { page: action.page, count: action.count };
+	}
+	if (action.type === 'NEXT' || action.type === 'PREV') {
+		return { page: action.page, count: state.count };
+	}
+	return { page: 1, count: 0 };
+};
 
 const TodosList = (props: {
 	todos: ITodo[];
@@ -17,15 +33,24 @@ const TodosList = (props: {
 	const [query, setQuery] = useState('');
 	const [todos, setTodos] = useState<ITodo[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
-
+	const [todoOptions, dispatch] = useReducer(optionsReducer, { page: 1, count: 0 });
+	const [toggleActive, setToggleActive] = useState(false);
+	const [toggleCompleted, setToggleCompleted] = useState(false);
+	const anyCond = toggleActive || toggleCompleted || query;
 	useEffect(() => {
 		if (query) {
 			setIsLoading(true);
 		}
+		let st = '';
+		if (toggleActive) {
+			st = '&status=unfinished';
+		} else if (toggleCompleted) {
+			st = '&status=finished';
+		}
 		const searchedTodos = async () => {
 			const res = await axios
 				.post(
-					'http://localhost:3000/todos/search',
+					'http://localhost:3000/todos/search?page=' + todoOptions.page + st,
 					{ query },
 					{
 						headers: { Authorization: localStorage.getItem('isLogged') },
@@ -35,17 +60,18 @@ const TodosList = (props: {
 					console.log(err + 'error handling here');
 				});
 			if (res?.statusText === 'OK') {
-				setTodos(res.data);
+				setTodos(res.data.todos);
+				dispatch({ type: 'UPDATE', page: res.data.page, count: res.data.todosCount });
 			}
 		};
 		const x = setTimeout(() => {
-			query ? searchedTodos() : setTodos([]);
+			anyCond ? searchedTodos() : setTodos([]);
 			setIsLoading(false);
-		}, 800);
+		}, 600);
 		return () => {
 			clearTimeout(x);
 		};
-	}, [query]);
+	}, [query, todoOptions.page, toggleActive, toggleCompleted]);
 
 	const onRemoveTodo = (todoId: string) => {
 		props.onRemoveTodo(todoId);
@@ -59,14 +85,41 @@ const TodosList = (props: {
 
 	const todoSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setQuery(e.target.value);
+		setToggleCompleted(false);
+		setToggleActive(false);
 	};
-	const hasNext = props.todosCount - (props.page - 1) * 6 > 6 ? true : false;
+	let hasNext = props.todosCount - (props.page - 1) * 6 > 6 ? true : false;
+	if (anyCond) {
+		hasNext = todoOptions.count - (todoOptions.page - 1) * 6 > 6 ? true : false;
+	}
+
+	const onActiveHandler = () => {
+		setToggleActive(!toggleActive);
+		setToggleCompleted(false);
+		dispatch({ type: 'UPDATE', page: 1, count: todoOptions.count });
+	};
+	const onCompleteHandler = () => {
+		setToggleCompleted(!toggleCompleted);
+		setToggleActive(false);
+		dispatch({ type: 'UPDATE', page: 1, count: todoOptions.count });
+	};
+	const nextHandler = () => {
+		dispatch({ type: 'NEXT', page: todoOptions.page + 1, count: todoOptions.count });
+	};
+	const previousHandler = () => {
+		dispatch({ type: 'PREV', page: todoOptions.page - 1, count: todoOptions.count });
+	};
 
 	return (
 		<div className='relative w-1/2 rounded border-t-2 border-t-amber-400 p-3 shadow-lg top-[5%] bg-neutral-800 min-h-[80%]'>
-			<TodoHeader query={query} todoSearchHandler={todoSearchHandler} />
+			<TodoHeader
+				query={query}
+				todoSearchHandler={todoSearchHandler}
+				onActive={onActiveHandler}
+				onComplete={onCompleteHandler}
+			/>
 			<ul>
-				{!query && props.todos.length > 0 ? (
+				{!toggleActive && !toggleCompleted && !query && props.todos.length > 0 ? (
 					props.todos.map(todo => (
 						<Todo
 							key={todo._id}
@@ -75,7 +128,7 @@ const TodosList = (props: {
 							onUpdateTodo={onUpdateTodo}
 						/>
 					))
-				) : query ? (
+				) : query || toggleActive || toggleCompleted ? (
 					todos.map(todo => (
 						<Todo
 							key={todo._id}
@@ -97,15 +150,15 @@ const TodosList = (props: {
 			</Button>
 			<button
 				className='material-symbols-outlined absolute left-[35%] bottom-[-6px] text-3xl hover:text-amber-400 transition-all disabled:text-gray-500'
-				disabled={props.page <= 1 && true}
-				onClick={props.previousHandler}
+				disabled={(todoOptions.page <= 1 && anyCond) || (props.page <= 1 && !anyCond) ? true : false}
+				onClick={anyCond ? previousHandler : props.previousHandler}
 			>
 				chevron_left
 			</button>
 			<button
 				className='material-symbols-outlined absolute right-[35%] bottom-[-6px] text-3xl hover:text-amber-400 transition-all disabled:text-gray-500'
 				disabled={!hasNext}
-				onClick={props.nextHandler}
+				onClick={anyCond ? nextHandler : props.nextHandler}
 			>
 				chevron_right
 			</button>
