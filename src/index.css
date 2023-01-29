@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+}
+
 .specific-date::-webkit-datetime-edit {
 	padding: 1em;
 }

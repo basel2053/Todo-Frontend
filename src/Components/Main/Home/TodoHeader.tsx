@@ -5,17 +5,23 @@ const TodoHeader = (props: {
 	todoSearchHandler: React.ChangeEventHandler;
 	onActive: React.MouseEventHandler;
 	onComplete: React.MouseEventHandler;
+	isActive: boolean;
+	isCompleted: boolean;
 }) => {
 	return (
 		<div className='flex bg-amber-300 mb-4 py-2 rounded'>
 			<button
-				className='mx-5 text-gray-900 hover:text-teal-500 font-bold text-lg transition-all'
+				className={`mx-5 text-gray-900 hover:text-teal-500 font-bold text-lg transition-all ${
+					props.isActive ? 'text-teal-500' : ''
+				}`}
 				onClick={props.onActive}
 			>
 				Active
 			</button>
 			<button
-				className='mx-5 text-gray-900 hover:text-rose-500 font-bold text-lg transition-all'
+				className={`mx-5 text-gray-900 hover:text-rose-500 font-bold text-lg transition-all ${
+					props.isCompleted ? 'text-red-500' : ''
+				}`}
 				onClick={props.onComplete}
 			>
 				Completed

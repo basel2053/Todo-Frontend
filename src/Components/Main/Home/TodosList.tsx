@@ -117,6 +117,8 @@ const TodosList = (props: {
 				todoSearchHandler={todoSearchHandler}
 				onActive={onActiveHandler}
 				onComplete={onCompleteHandler}
+				isActive={toggleActive}
+				isCompleted={toggleCompleted}
 			/>
 			<ul>
 				{!toggleActive && !toggleCompleted && !query && props.todos.length > 0 ? (
