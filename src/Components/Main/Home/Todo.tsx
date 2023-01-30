@@ -8,7 +8,7 @@ export interface ITodo {
 	endDate: string;
 }
 
-const Todo = (props: { todo: ITodo; onRemoveTodo: Function; onUpdateTodo: Function }) => {
+const Todo = (props: { todo: ITodo; onRemoveTodo?: Function; onUpdateTodo?: Function }) => {
 	let formatedDate: string = '';
 	if (props.todo.endDate) {
 		const date = new Date(props.todo.endDate);
@@ -26,11 +26,12 @@ const Todo = (props: { todo: ITodo; onRemoveTodo: Function; onUpdateTodo: Functi
 		}
 	};
 	const onRemoveTodo = () => {
-		props.onRemoveTodo(props.todo._id);
+		if (props.onRemoveTodo) props.onRemoveTodo(props.todo._id);
 	};
 	const onUpdateTodo = (e: React.MouseEvent) => {
 		if (e.target === e.currentTarget) {
-			props.onUpdateTodo({ ...props.todo, endDate: formatedDate ? props.todo.endDate.substring(0, 16) : '' });
+			if (props.onUpdateTodo)
+				props.onUpdateTodo({ ...props.todo, endDate: formatedDate ? props.todo.endDate.substring(0, 16) : '' });
 		}
 	};
 	return (
@@ -45,7 +46,7 @@ const Todo = (props: { todo: ITodo; onRemoveTodo: Function; onUpdateTodo: Functi
 					onChange={handleChange}
 					className='mr-3'
 				/>
-				<span className={checked == 'finished' ? 'line-through text-gray-500' : ''}>{props.todo.title}</span>{' '}
+				<span className={checked == 'finished' ? 'line-through text-gray-500' : ''}>{props.todo.title}</span>
 			</div>
 			<div className='flex absolute bottom-0'>
 				<span className='text-gray-400 text-xs ml-6 mr-1'>{formatedDate}</span>

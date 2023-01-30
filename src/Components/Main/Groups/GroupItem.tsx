@@ -3,17 +3,18 @@ import { useState } from 'react';
 const GroupItem = () => {
 	const [checked, setChecked] = useState(false);
 	return (
-		<li>
-			<div className='flex '>
+		<li className='flex justify-between'>
+			<div className='flex gap-2 items-center'>
 				<input
-					type='radio'
+					type='checkbox'
 					checked={checked}
-					onClick={() => {
+					onChange={() => {
 						setChecked(!checked);
 					}}
 				/>
-				<span>heyo</span>
+				<span className={checked ? 'line-through text-gray-600' : ''}>heyo</span>
 			</div>
+			<span className='material-symbols-outlined hover:text-rose-500 cursor-pointer p-[2px] transition-all'>close</span>
 		</li>
 	);
 };
