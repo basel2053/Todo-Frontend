@@ -28,3 +28,24 @@
 	border-radius: 4px;
 	cursor: pointer;
 }
+
+::-webkit-scrollbar {
+	width: 6px;
+	border-radius: 12px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	border-radius: 20px;
+	background: #555;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+	background: #555;
+}
+
+.sticky-bottom {
+	border-bottom: 1px solid #fbbf24;
+}
