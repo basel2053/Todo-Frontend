@@ -7,10 +7,11 @@ import axios, { AxiosError } from 'axios';
 import { ITodo } from '../Home/Todo';
 import TodoSelection from './TodoSelection';
 
-const GroupModal = (props: { onClose: React.MouseEventHandler }) => {
+const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Function }) => {
 	const [todos, setTodos] = useState<ITodo[]>([]);
 	const [activeCount, setActiveCount] = useState(0);
 	const [groupName, setGroupName] = useState('');
+	const [activeList, setActiveList] = useState<{ id: string; title: string }[]>([]);
 	useEffect(() => {
 		const getTodos = async () => {
 			const res = await axios
@@ -30,6 +31,10 @@ const GroupModal = (props: { onClose: React.MouseEventHandler }) => {
 	const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setGroupName(e.target.value);
 	};
+	const onCreateHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+		props.onCreate(groupName, activeList);
+		props.onClose(e);
+	};
 	return (
 		<>
 			<Backdrop onCloseModal={props.onClose} />
@@ -46,6 +51,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler }) => {
 					<Button
 						className='rounded-md w-1/4 py-[2px] border-amber-400 bg-amber-400 font-bold hover:bg-amber-500 hover:border-amber-500 transition-all disabled:cursor-not-allowed disabled:bg-neutral-600 disabled:border-none'
 						disabled={activeCount == 0 || (groupName.trim() === '' && true)}
+						onClick={onCreateHandler}
 					>
 						Create
 					</Button>
@@ -57,7 +63,15 @@ const GroupModal = (props: { onClose: React.MouseEventHandler }) => {
 				</div>
 				<div className='mt-2'>
 					{todos.length > 0 &&
-						todos.map(t => <TodoSelection key={t._id} todo={t} setActiveCount={setActiveCount} active={activeCount} />)}
+						todos.map(t => (
+							<TodoSelection
+								key={t._id}
+								todo={t}
+								setActiveCount={setActiveCount}
+								setActiveList={setActiveList}
+								active={activeCount}
+							/>
+						))}
 				</div>
 			</Card>
 		</>

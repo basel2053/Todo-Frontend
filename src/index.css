@@ -3,9 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-}
-
 .specific-date::-webkit-datetime-edit {
 	padding: 1em;
 }
@@ -48,4 +45,8 @@
 
 .sticky-bottom {
 	border-bottom: 1px solid #fbbf24;
+}
+
+.datePicker {
+	width: auto !important;
 }

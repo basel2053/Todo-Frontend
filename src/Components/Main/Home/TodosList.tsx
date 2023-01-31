@@ -36,7 +36,13 @@ const TodosList = (props: {
 	const [todoOptions, dispatch] = useReducer(optionsReducer, { page: 1, count: 0 });
 	const [toggleActive, setToggleActive] = useState(false);
 	const [toggleCompleted, setToggleCompleted] = useState(false);
-	const anyCond = toggleActive || toggleCompleted || query;
+	const [date, setDate] = useState<undefined | Date>();
+
+	const anyCond = toggleActive || toggleCompleted || query || date;
+	const dateSearch = async (d: Date) => {
+		setDate(d);
+	};
+
 	useEffect(() => {
 		if (query) {
 			setIsLoading(true);
@@ -47,11 +53,12 @@ const TodosList = (props: {
 		} else if (toggleCompleted) {
 			st = '&status=finished';
 		}
+
 		const searchedTodos = async () => {
 			const res = await axios
 				.post(
 					'http://localhost:3000/todos/search?page=' + todoOptions.page + st,
-					{ query },
+					{ query, date: date ? date : '' },
 					{
 						headers: { Authorization: localStorage.getItem('isLogged') },
 					}
@@ -59,6 +66,7 @@ const TodosList = (props: {
 				.catch((err: AxiosError) => {
 					console.log(err + 'error handling here');
 				});
+
 			if (res?.statusText === 'OK') {
 				setTodos(res.data.todos);
 				dispatch({ type: 'UPDATE', page: res.data.page, count: res.data.todosCount });
@@ -71,7 +79,7 @@ const TodosList = (props: {
 		return () => {
 			clearTimeout(x);
 		};
-	}, [query, todoOptions.page, toggleActive, toggleCompleted]);
+	}, [query, todoOptions.page, toggleActive, toggleCompleted, date]);
 
 	const onRemoveTodo = (todoId: string) => {
 		props.onRemoveTodo(todoId);
@@ -85,6 +93,7 @@ const TodosList = (props: {
 
 	const todoSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setQuery(e.target.value);
+		setDate(undefined);
 		setToggleCompleted(false);
 		setToggleActive(false);
 	};
@@ -96,11 +105,13 @@ const TodosList = (props: {
 	const onActiveHandler = () => {
 		setToggleActive(!toggleActive);
 		setToggleCompleted(false);
+		setDate(undefined);
 		dispatch({ type: 'UPDATE', page: 1, count: todoOptions.count });
 	};
 	const onCompleteHandler = () => {
 		setToggleCompleted(!toggleCompleted);
 		setToggleActive(false);
+		setDate(undefined);
 		dispatch({ type: 'UPDATE', page: 1, count: todoOptions.count });
 	};
 	const nextHandler = () => {
@@ -119,6 +130,7 @@ const TodosList = (props: {
 				onComplete={onCompleteHandler}
 				isActive={toggleActive}
 				isCompleted={toggleCompleted}
+				onDateSearch={dateSearch}
 			/>
 			<ul>
 				{!toggleActive && !toggleCompleted && !query && props.todos.length > 0 ? (

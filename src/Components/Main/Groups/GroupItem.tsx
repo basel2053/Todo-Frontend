@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const GroupItem = () => {
+const GroupItem = (props: { title: string }) => {
 	const [checked, setChecked] = useState(false);
 	return (
 		<li className='flex justify-between'>
@@ -12,7 +12,7 @@ const GroupItem = () => {
 						setChecked(!checked);
 					}}
 				/>
-				<span className={checked ? 'line-through text-gray-600' : ''}>heyo</span>
+				<span className={checked ? 'line-through text-gray-600' : ''}>{props.title}</span>
 			</div>
 			<span className='material-symbols-outlined hover:text-rose-500 cursor-pointer p-[2px] transition-all'>close</span>
 		</li>
