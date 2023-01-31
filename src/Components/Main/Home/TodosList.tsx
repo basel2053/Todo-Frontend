@@ -96,6 +96,7 @@ const TodosList = (props: {
 		setDate(undefined);
 		setToggleCompleted(false);
 		setToggleActive(false);
+		dispatch({ type: 'UPDATE', page: 1, count: todoOptions.count });
 	};
 	let hasNext = props.todosCount - (props.page - 1) * 6 > 6 ? true : false;
 	if (anyCond) {
@@ -133,7 +134,7 @@ const TodosList = (props: {
 				onDateSearch={dateSearch}
 			/>
 			<ul>
-				{!toggleActive && !toggleCompleted && !query && props.todos.length > 0 ? (
+				{!toggleActive && !toggleCompleted && !query && !date && props.todos.length > 0 ? (
 					props.todos.map(todo => (
 						<Todo
 							key={todo._id}
@@ -142,7 +143,7 @@ const TodosList = (props: {
 							onUpdateTodo={onUpdateTodo}
 						/>
 					))
-				) : query || toggleActive || toggleCompleted ? (
+				) : anyCond ? (
 					todos.map(todo => (
 						<Todo
 							key={todo._id}
