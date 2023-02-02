@@ -11,7 +11,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Functio
 	const [todos, setTodos] = useState<ITodo[]>([]);
 	const [activeCount, setActiveCount] = useState(0);
 	const [groupName, setGroupName] = useState('');
-	const [activeList, setActiveList] = useState<{ id: string; title: string }[]>([]);
+	const [activeList, setActiveList] = useState<ITodo[]>([]);
 	useEffect(() => {
 		const getTodos = async () => {
 			const res = await axios

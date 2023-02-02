@@ -5,7 +5,7 @@ export interface ITodo {
 	_id?: string;
 	title: string;
 	status?: 'finished' | 'unfinished';
-	endDate: string;
+	endDate?: string;
 }
 
 const Todo = (props: { todo: ITodo; onRemoveTodo?: Function; onUpdateTodo?: Function }) => {
@@ -31,7 +31,7 @@ const Todo = (props: { todo: ITodo; onRemoveTodo?: Function; onUpdateTodo?: Func
 	const onUpdateTodo = (e: React.MouseEvent) => {
 		if (e.target === e.currentTarget) {
 			if (props.onUpdateTodo)
-				props.onUpdateTodo({ ...props.todo, endDate: formatedDate ? props.todo.endDate.substring(0, 16) : '' });
+				props.onUpdateTodo({ ...props.todo, endDate: formatedDate ? props.todo.endDate?.substring(0, 16) : '' });
 		}
 	};
 	return (

@@ -4,11 +4,13 @@ import Input from '../../UI/Input';
 import Group from './Group';
 import GroupModal from './GroupModal';
 import axios, { AxiosError } from 'axios';
+import { ITodo } from '../Home/Todo';
 
 export interface IGroup {
 	_id: string;
 	name: string;
-	todos: { id: string; title: string }[];
+	color: number;
+	todos: ITodo[];
 }
 
 const GroupList = () => {
@@ -35,12 +37,17 @@ const GroupList = () => {
 		setShowCreate(false);
 	};
 
-	const onCreateHandler = async (groupName: string, activeList: { id: string; title: string }[]) => {
-		setGroups(prevGroups => [...prevGroups, { _id: String(Date.now()), name: groupName, todos: activeList }]);
-		const ids = activeList.map(todo => todo.id);
+	const onCreateHandler = async (groupName: string, activeList: ITodo[]) => {
+		const random = Math.floor(Math.random() * 10);
+		setGroups(prevGroups => [
+			...prevGroups,
+			{ _id: String(Date.now()), name: groupName, color: random, todos: activeList },
+		]);
+
+		const ids = activeList.map(todo => todo._id);
 		await axios.post(
 			'http://localhost:3000/groups',
-			{ name: groupName, todos: ids },
+			{ name: groupName, color: random, todos: ids },
 			{
 				headers: { Authorization: localStorage.getItem('isLogged') },
 			}

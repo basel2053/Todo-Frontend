@@ -44,7 +44,7 @@ const TodosList = (props: {
 	};
 
 	useEffect(() => {
-		if (query) {
+		if (!(toggleActive || toggleCompleted || date) && query) {
 			setIsLoading(true);
 		}
 		let st = '';
@@ -72,13 +72,17 @@ const TodosList = (props: {
 				dispatch({ type: 'UPDATE', page: res.data.page, count: res.data.todosCount });
 			}
 		};
-		const x = setTimeout(() => {
+		if (toggleActive || toggleCompleted || date) {
 			anyCond ? searchedTodos() : setTodos([]);
-			setIsLoading(false);
-		}, 600);
-		return () => {
-			clearTimeout(x);
-		};
+		} else {
+			const x = setTimeout(() => {
+				anyCond ? searchedTodos() : setTodos([]);
+				setIsLoading(false);
+			}, 600);
+			return () => {
+				clearTimeout(x);
+			};
+		}
 	}, [query, todoOptions.page, toggleActive, toggleCompleted, date]);
 
 	const onRemoveTodo = (todoId: string) => {

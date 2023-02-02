@@ -5,7 +5,7 @@ const TodoSelection = (props: {
 	todo: ITodo;
 	setActiveCount: React.Dispatch<React.SetStateAction<number>>;
 	active: number;
-	setActiveList: React.Dispatch<React.SetStateAction<{ id: string; title: string }[]>>;
+	setActiveList: React.Dispatch<React.SetStateAction<ITodo[]>>;
 }) => {
 	const [isActive, setIsActive] = useState(false);
 	let formatedDate: string = '';
@@ -18,7 +18,7 @@ const TodoSelection = (props: {
 	};
 	useEffect(() => {
 		if (!isActive) {
-			props.setActiveList(prevList => prevList.filter(t => t.id !== String(props.todo._id)));
+			props.setActiveList(prevList => prevList.filter(t => t._id !== String(props.todo._id)));
 			props.setActiveCount(prevCount => {
 				if (prevCount !== 0) {
 					return prevCount - 1;
@@ -27,7 +27,10 @@ const TodoSelection = (props: {
 			});
 		}
 		if (isActive) {
-			props.setActiveList(prevList => [...prevList, { id: String(props.todo._id), title: props.todo.title }]);
+			props.setActiveList(prevList => [
+				...prevList,
+				{ _id: String(props.todo._id), title: props.todo.title, endDate: props.todo.endDate },
+			]);
 			props.setActiveCount(prevCount => prevCount + 1);
 		}
 	}, [isActive, props.setActiveCount]);
