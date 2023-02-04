@@ -19,7 +19,7 @@ const Group = (props: { group: IGroup; onDelete: Function; onEdit: Function }) =
 		props.onDelete(props.group._id);
 	};
 	const onGroupEdit = () => {
-		props.onEdit(props.group._id);
+		props.onEdit(props.group);
 	};
 	return (
 		<article className='w-2/5 border-2 rounded-md px-5 border-gray-600 text-gray-300 shadow-xl pb-2 relative'>

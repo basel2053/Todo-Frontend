@@ -17,6 +17,7 @@ const GroupList = () => {
 	const [showCreate, setShowCreate] = useState(false);
 	const [groups, setGroups] = useState<IGroup[]>([]);
 	const [query, setQuery] = useState('');
+	const [editGroup, setEditGroup] = useState<IGroup | undefined>();
 	useEffect(() => {
 		const getGroups = async () => {
 			const res = await axios
@@ -37,21 +38,24 @@ const GroupList = () => {
 		setShowCreate(false);
 	};
 
-	const onCreateHandler = async (groupName: string, activeList: ITodo[]) => {
-		const random = Math.floor(Math.random() * 10);
-		setGroups(prevGroups => [
-			...prevGroups,
-			{ _id: String(Date.now()), name: groupName, color: random, todos: activeList },
-		]);
+	const onCreateHandler = async (groupName: string, activeList: ITodo[], group?: IGroup) => {
+		let random = group?.color || Math.floor(Math.random() * 10);
+		if (group) {
+			setGroups(prevGroups =>
+				prevGroups.map(g => (g._id !== group._id ? g : { ...group, name: groupName, todos: activeList }))
+			);
+		}
 
 		const ids = activeList.map(todo => todo._id);
-		await axios.post(
-			'http://localhost:3000/groups',
-			{ name: groupName, color: random, todos: ids },
-			{
-				headers: { Authorization: localStorage.getItem('isLogged') },
-			}
-		);
+		const res = await axios({
+			method: group ? 'patch' : 'post',
+			url: 'http://localhost:3000/groups',
+			data: { groupId: group?._id, name: groupName, color: random, todos: ids },
+			headers: { Authorization: localStorage.getItem('isLogged') },
+		});
+		if (!group) {
+			setGroups(prevGroups => [...prevGroups, { _id: res.data.id, name: groupName, color: random, todos: activeList }]);
+		}
 	};
 
 	const groupDeleteHandler = async (id: string) => {
@@ -70,9 +74,9 @@ const GroupList = () => {
 		}
 	};
 
-	const groupEditHandler = (id: string) => {
-		console.log(id);
+	const groupEditHandler = (group: IGroup) => {
 		setShowCreate(true);
+		setEditGroup(group);
 	};
 
 	const serachHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,11 +92,12 @@ const GroupList = () => {
 					className='material-symbols-outlined  bg-amber-400 flex items-center justify-center p-1 rounded-full border-none hover:bg-yellow-400 transition-all h-9 w-9 text-4xl'
 					onClick={() => {
 						setShowCreate(true);
+						setEditGroup(undefined);
 					}}
 				>
 					add
 				</Button>
-				{showCreate && <GroupModal onClose={closeHandler} onCreate={onCreateHandler} />}
+				{showCreate && <GroupModal onClose={closeHandler} onCreate={onCreateHandler} group={editGroup} />}
 			</div>
 
 			{groups.length > 0 ? (

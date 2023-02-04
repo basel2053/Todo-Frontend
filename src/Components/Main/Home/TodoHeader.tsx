@@ -48,7 +48,7 @@ const TodoHeader = (props: {
 				onChange={dateChangeHandler}
 				shouldCloseOnSelect={false}
 				minDate={new Date()}
-				className='bg-neutral-700 rounded-md p-1'
+				className='bg-neutral-700 rounded-md p-1 hover:bg-neutral-600 transition-all'
 				wrapperClassName='datePicker'
 				customInput={<button className='material-symbols-outlined text-gray-100'>calendar_month</button>}
 			/>

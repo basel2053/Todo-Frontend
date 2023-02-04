@@ -6,12 +6,13 @@ import { Backdrop } from '../Modal/Modal';
 import axios, { AxiosError } from 'axios';
 import { ITodo } from '../Home/Todo';
 import TodoSelection from './TodoSelection';
+import { IGroup } from './GroupList';
 
-const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Function }) => {
+const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Function; group?: IGroup }) => {
 	const [todos, setTodos] = useState<ITodo[]>([]);
-	const [activeCount, setActiveCount] = useState(0);
-	const [groupName, setGroupName] = useState('');
-	const [activeList, setActiveList] = useState<ITodo[]>([]);
+	const [activeCount, setActiveCount] = useState(props.group ? props.group.todos.length : 0);
+	const [groupName, setGroupName] = useState(props.group ? props.group.name : '');
+	const [activeList, setActiveList] = useState<ITodo[]>(props.group ? props.group.todos : []);
 	useEffect(() => {
 		const getTodos = async () => {
 			const res = await axios
@@ -32,7 +33,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Functio
 		setGroupName(e.target.value);
 	};
 	const onCreateHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-		props.onCreate(groupName, activeList);
+		props.onCreate(groupName, activeList, props.group);
 		props.onClose(e);
 	};
 	return (
@@ -70,6 +71,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Functio
 								setActiveCount={setActiveCount}
 								setActiveList={setActiveList}
 								active={activeCount}
+								isChecked={props.group?.todos.find(i => i._id == t._id) ? true : false}
 							/>
 						))}
 				</div>
