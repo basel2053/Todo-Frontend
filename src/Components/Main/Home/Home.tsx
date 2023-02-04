@@ -51,18 +51,19 @@ const Home = () => {
 		setUpdatingTodo(todo);
 	};
 	const createTodoHandler = async (todo: ITodo) => {
-		if (todos.length < 6) {
-			setTodos(prevState => [...prevState, { _id: String(Date.now()), ...todo }]);
-		}
-		await axios
-			.post('http://localhost:3000/todos', todo, {
+		try {
+			const res = await axios.post('http://localhost:3000/todos', todo, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
-			})
-			.catch((err: AxiosError) => {
-				console.log(err + ' error handling here');
 			});
-		setTodosCount(todosCount + 1);
-		setShowModal(false);
+
+			setTodosCount(todosCount + 1);
+			setShowModal(false);
+			if (todos.length < 6) {
+				setTodos(prevState => [...prevState, { _id: res.data.id, ...todo }]);
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	const removeTodoHandler = async (todoId: string) => {
 		if (confirm('confirm deleting this item.')) {
