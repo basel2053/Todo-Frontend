@@ -10,7 +10,10 @@ const Header = () => {
 		onLogout();
 	};
 	return (
-		<header className='h-14 bg-amber-400 flex items-center justify-end px-[5%]'>
+		<header className='h-14 bg-amber-400 flex items-center justify-between px-[5%]'>
+			<div className='w-10 '>
+				<img src='logo.png' alt='logo' />
+			</div>
 			<ul className='flex items-center'>
 				<li>
 					<NavLink

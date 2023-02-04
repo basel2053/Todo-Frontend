@@ -54,9 +54,31 @@ const GroupList = () => {
 		);
 	};
 
+	const groupDeleteHandler = async (id: string) => {
+		if (confirm('confirm deleting this group.')) {
+			setGroups(prevGroups => prevGroups.filter(g => g._id !== id));
+			await axios
+				.delete('http://localhost:3000/groups', {
+					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
+					data: {
+						groupId: id,
+					},
+				})
+				.catch((err: AxiosError) => {
+					console.log(err + ' error handling here');
+				});
+		}
+	};
+
+	const groupEditHandler = (id: string) => {
+		console.log(id);
+		setShowCreate(true);
+	};
+
 	const serachHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setQuery(e.target.value);
 	};
+
 	const filteredGroups = query ? groups.filter(g => g.name.toLowerCase().includes(query.toLowerCase())) : groups;
 	return (
 		<>
@@ -76,7 +98,7 @@ const GroupList = () => {
 			{groups.length > 0 ? (
 				<div className='m-auto flex flex-wrap justify-center gap-5 w-10/12 min-h-[70vh] my-10'>
 					{filteredGroups.map(g => (
-						<Group key={g._id} group={g} />
+						<Group key={g._id} group={g} onDelete={groupDeleteHandler} onEdit={groupEditHandler} />
 					))}
 				</div>
 			) : (
