@@ -28,7 +28,7 @@ const Login = () => {
 			.catch((err: AxiosError) => {
 				if (err.response) setSubmitMsg(err.response.data as string);
 			});
-		if (res?.statusText === 'OK') {
+		if (res?.status === 200) {
 			onLogin(res.data);
 			navigate('/');
 		}

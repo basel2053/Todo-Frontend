@@ -30,11 +30,11 @@ const Signup = () => {
 			.catch((err: AxiosError) => {
 				if (err.response) setSubmitMsg(err.response.data + ', or the email is not valid');
 			});
-		if (res?.statusText === 'OK') {
+		if (res?.status === 200) {
 			setSubmitMsg('created sucessfully, you will be redirected');
 
 			setTimeout(() => {
-				navigate('https://todo-api-9vno.onrender.com/login');
+				navigate('/login');
 			}, 3000);
 		}
 	};
