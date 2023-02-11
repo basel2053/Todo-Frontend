@@ -20,7 +20,7 @@ const Home = () => {
 
 	const getTodos = async () => {
 		const res = await axios
-			.get('http://localhost:3000/todos?page=' + page, {
+			.get('https://todo-api-9vno.onrender.com/todos?page=' + page, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
 			})
 			.catch((err: AxiosError) => {
@@ -52,7 +52,7 @@ const Home = () => {
 	};
 	const createTodoHandler = async (todo: ITodo) => {
 		try {
-			const res = await axios.post('http://localhost:3000/todos', todo, {
+			const res = await axios.post('https://todo-api-9vno.onrender.com/todos', todo, {
 				headers: { Authorization: localStorage.getItem('isLogged') },
 			});
 
@@ -68,7 +68,7 @@ const Home = () => {
 	const removeTodoHandler = async (todoId: string) => {
 		if (confirm('confirm deleting this item.')) {
 			await axios
-				.delete('http://localhost:3000/todos', {
+				.delete('https://todo-api-9vno.onrender.com/todos', {
 					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
 					data: {
 						todoId,
@@ -87,7 +87,7 @@ const Home = () => {
 
 		await axios
 			.patch(
-				'http://localhost:3000/todos',
+				'https://todo-api-9vno.onrender.com/todos',
 				{
 					todoId: todo._id,
 					title: todo.title,

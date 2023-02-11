@@ -21,7 +21,7 @@ const Signup = () => {
 	const registerHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const res = await axios
-			.post('http://localhost:3000/signup', {
+			.post('https://todo-api-9vno.onrender.com/signup', {
 				email: emailInput.value,
 				password: passwordInput.value,
 				confirmPassword: confirmInput.value,

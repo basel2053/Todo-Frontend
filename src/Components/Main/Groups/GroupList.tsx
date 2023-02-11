@@ -21,7 +21,7 @@ const GroupList = () => {
 	useEffect(() => {
 		const getGroups = async () => {
 			const res = await axios
-				.get('http://localhost:3000/groups', {
+				.get('https://todo-api-9vno.onrender.com/groups', {
 					headers: { Authorization: localStorage.getItem('isLogged') },
 				})
 				.catch((err: AxiosError) => {
@@ -49,7 +49,7 @@ const GroupList = () => {
 		const ids = activeList.map(todo => todo._id);
 		const res = await axios({
 			method: group ? 'patch' : 'post',
-			url: 'http://localhost:3000/groups',
+			url: 'https://todo-api-9vno.onrender.com/groups',
 			data: { groupId: group?._id, name: groupName, color: random, todos: ids },
 			headers: { Authorization: localStorage.getItem('isLogged') },
 		});
@@ -62,7 +62,7 @@ const GroupList = () => {
 		if (confirm('confirm deleting this group.')) {
 			setGroups(prevGroups => prevGroups.filter(g => g._id !== id));
 			await axios
-				.delete('http://localhost:3000/groups', {
+				.delete('https://todo-api-9vno.onrender.com/groups', {
 					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
 					data: {
 						groupId: id,

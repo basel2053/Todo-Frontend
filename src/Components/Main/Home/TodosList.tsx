@@ -57,7 +57,7 @@ const TodosList = (props: {
 		const searchedTodos = async () => {
 			const res = await axios
 				.post(
-					'http://localhost:3000/todos/search?page=' + todoOptions.page + st,
+					'https://todo-api-9vno.onrender.com/todos/search?page=' + todoOptions.page + st,
 					{ query, date: date ? date : '' },
 					{
 						headers: { Authorization: localStorage.getItem('isLogged') },

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const updateStatus = async (status: 'finished' | 'unfinished', id?: string) => {
 	await axios.patch(
-		'http://localhost:3000/todos',
+		'https://todo-api-9vno.onrender.com/todos',
 		{
 			status: status,
 			todoId: id,

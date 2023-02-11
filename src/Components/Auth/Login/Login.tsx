@@ -21,7 +21,7 @@ const Login = () => {
 	const loginHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const res = await axios
-			.post('http://localhost:3000/login', {
+			.post('https://todo-api-9vno.onrender.com/login', {
 				email: emailInput.value,
 				password: passwordInput.value,
 			})

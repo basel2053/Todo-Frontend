@@ -16,7 +16,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Functio
 	useEffect(() => {
 		const getTodos = async () => {
 			const res = await axios
-				.get('http://localhost:3000/todos/all', {
+				.get('https://todo-api-9vno.onrender.com/todos/all', {
 					headers: { Authorization: localStorage.getItem('isLogged') },
 				})
 				.catch((err: AxiosError) => {
