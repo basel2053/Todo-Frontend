@@ -34,7 +34,7 @@ const Signup = () => {
 			setSubmitMsg('created sucessfully, you will be redirected');
 
 			setTimeout(() => {
-				navigate('/login');
+				navigate('https://todo-api-9vno.onrender.com/login');
 			}, 3000);
 		}
 	};
