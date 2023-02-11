@@ -27,7 +27,7 @@ const Home = () => {
 				console.log(err + 'error handling here');
 			});
 
-		if (res?.statusText === 'OK') {
+		if (res?.status === 200) {
 			setTodos(res.data.todos);
 			setTodosCount(res.data.todosCount);
 			setPage(res.data.page);

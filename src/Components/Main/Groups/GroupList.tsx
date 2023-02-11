@@ -27,7 +27,7 @@ const GroupList = () => {
 				.catch((err: AxiosError) => {
 					console.log(err + 'error handling here');
 				});
-			if (res?.statusText === 'OK') {
+			if (res?.status === 200) {
 				setGroups(res.data.groups);
 			}
 		};

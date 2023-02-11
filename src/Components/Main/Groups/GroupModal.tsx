@@ -23,7 +23,7 @@ const GroupModal = (props: { onClose: React.MouseEventHandler; onCreate: Functio
 					console.log(err + 'error handling here');
 				});
 
-			if (res?.statusText === 'OK') {
+			if (res?.status === 200) {
 				setTodos(res.data.todos);
 			}
 		};
