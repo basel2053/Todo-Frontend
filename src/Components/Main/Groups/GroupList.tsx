@@ -28,7 +28,7 @@ const GroupList = () => {
 					console.log(err + 'error handling here');
 				});
 			if (res?.statusText === 'OK') {
-				setGroups(res.data);
+				setGroups(res.data.groups);
 			}
 		};
 		getGroups();

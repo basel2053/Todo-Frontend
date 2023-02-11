@@ -84,12 +84,14 @@ const Home = () => {
 		setTodos(prevState =>
 			prevState.map(t => (t._id !== todo._id ? t : { ...t, title: todo.title, endDate: todo.endDate }))
 		);
+
 		await axios
 			.patch(
 				'http://localhost:3000/todos',
 				{
-					title: todo.title,
 					todoId: todo._id,
+					title: todo.title,
+					endDate: todo.endDate,
 				},
 				{
 					headers: { Authorization: localStorage.getItem('isLogged'), 'Content-Type': 'application/json' },
@@ -100,6 +102,7 @@ const Home = () => {
 			});
 		setShowModal(false);
 	};
+
 	const nextHandler = () => {
 		setPage(page + 1);
 		navigate({

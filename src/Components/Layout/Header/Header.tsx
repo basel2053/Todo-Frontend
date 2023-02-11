@@ -2,6 +2,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '../../../context/auth-context';
 import Button from '../../UI/Button';
+
 const Header = () => {
 	const navigate = useNavigate();
 	const { isLogged, onLogout } = useContext(AuthContext);
@@ -9,6 +10,7 @@ const Header = () => {
 		navigate('/');
 		onLogout();
 	};
+
 	return (
 		<header className='h-14 bg-amber-400 flex items-center justify-between px-[5%]'>
 			<div className='w-10 '>

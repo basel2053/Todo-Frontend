@@ -31,8 +31,13 @@ const ModalOverlay = (props: {
 	const updateHandler = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		props.onUpdateTodo({ _id: props.todo?._id, title: titleInput.value, endDate: dateInput.value });
+		props.onUpdateTodo({
+			_id: props.todo?._id,
+			title: titleInput.value || props.todo?.title,
+			endDate: dateInput.value || props.todo?.endDate,
+		});
 	};
+
 	return (
 		<Card className='fixed z-30 w-1/3 m-auto inset-x-0 top-[20%] min-h-[50vh] bg-neutral-800 border-[2px] border-b-[3px] shadow-lg'>
 			<form onSubmit={props.todo?.title ? updateHandler : createHandler} className='flex flex-col items-center mt-5'>
@@ -75,7 +80,7 @@ const ModalOverlay = (props: {
 					</Button>
 					<Button
 						className='py-1 px-4 border-amber-300 text-amber-300 hover:bg-amber-400  hover:text-gray-50 transition-all cursor-pointer border-2 rounded-xl font-bold inline-block text-3xl mb-10 mt-6 disabled:text-amber-200 disabled:border-amber-200 disabled:hover:bg-transparent'
-						disabled={!formIsValid}
+						disabled={!formIsValid && !props.todo?.title}
 					>
 						{props.todo?.title ? 'Edit' : 'Create'}
 					</Button>
